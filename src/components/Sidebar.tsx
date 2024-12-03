@@ -14,8 +14,8 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-16 bg-white border-r border-gray-200 pt-20">
-      <nav className="flex flex-col items-center space-y-8">
+    <aside className="fixed bottom-0 left-0 right-0 md:right-auto md:top-0 md:bottom-0 md:w-16 bg-white border-t md:border-t-0 md:border-r border-gray-200 md:pt-20 z-40">
+      <nav className="flex md:flex-col items-center justify-around md:justify-start md:space-y-8 h-16 md:h-auto">
         {links.map(({ icon: Icon, path, label }) => (
           <Link
             key={path}

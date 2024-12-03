@@ -6,5 +6,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
-  base: '/news-viewer/', // Repository name
+  base: '/news-viewer/',
 });

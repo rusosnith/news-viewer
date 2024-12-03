@@ -36,13 +36,16 @@ export default function ArticleList({ articles }: ArticleListProps) {
                 {article.date && <span>{article.date}</span>}
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <div className={`flex items-center space-x-2 ${getStatusColor(article.status)}`}>
                 {article.status === 'unreviewed' && <AlertTriangle className="w-4 h-4" />}
                 <span className="font-medium">{article.status}</span>
                 {article.quality && <span>{article.quality}%</span>}
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <div className="flex items-center space-x-2 text-blue-600">
+                <span className="text-sm font-medium">Abrir artículo</span>
+                <ChevronRight className="w-5 h-5" />
+              </div>
             </div>
           </div>
         </Link>
