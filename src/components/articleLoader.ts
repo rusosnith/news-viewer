@@ -13,7 +13,7 @@ const loadArticles = (): Article[] => {
             metrics: output.metrics as any || {},
             sentiment: output.sentiment || {},
             sources: output.sources || {},
-            status: output.status || 'desconocido'
+            status: output.status
         };
     });
 };
