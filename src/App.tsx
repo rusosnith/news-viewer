@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import ArticleDetail from './pages/ArticleDetail';
 import LoadedArticlesPage from './pages/LoadedArticlesPage';
-import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
@@ -13,13 +12,11 @@ function App() {
         <Header />
         <Sidebar />
         <main className="pl-0 md:pl-16 pt-16">
-          <ErrorBoundary>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/article/:id" element={<ArticleDetail />} />
-              <Route path="/loaded-articles" element={<LoadedArticlesPage />} />
-            </Routes>
-          </ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/article/:id" element={<ArticleDetail />} />
+            <Route path="/loaded-articles" element={<LoadedArticlesPage />} />
+          </Routes>
         </main>
       </div>
     </Router>
