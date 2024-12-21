@@ -1,3 +1,4 @@
+
 export interface Article {
   id: string;
   hora: string;
@@ -13,8 +14,9 @@ export interface Article {
   titulo: string;
   resumen: string;
   medio: string;
+  // Add additional fields from output data
   adjectives?: any;
-  entities?: any;
+  entities?: {entities_freq: [any,any][], entities_list:  { text: string; type: string; start_char: number; end_char: number;sentiment: number }[]};
   metrics?: any;
   sentiment?: any;
   sources?: any;
@@ -30,10 +32,11 @@ export interface Metrics {
 }
 
 export interface EntityMetrics {
-  people: number;
-  places: number;
-  dates: number;
-  organizations: number;
+  Lugar: number;
+  Persona: number;
+  Organización: number;
+  Misceláneo: number;
+  Fecha:number;
 }
 
 export interface AdjectiveMetrics {

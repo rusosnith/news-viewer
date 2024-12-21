@@ -1,12 +1,27 @@
 import { User2, Flag, Calendar, Shield } from 'lucide-react';
-import type { EntityMetrics } from '../types';
+import type { Article, EntityMetrics } from '../types';
 
 interface EntityMetricsProps {
-  metrics: EntityMetrics;
+  entities: Article['entities'];
 }
 
-export default function EntityMetrics({ metrics }: EntityMetricsProps) {
-  const total = metrics.people + metrics.places + metrics.dates + metrics.organizations;
+export default function EntityMetrics({ entities }: EntityMetricsProps) {
+
+  const metrics: EntityMetrics = {
+    Fecha: 0,
+    Lugar: 0,
+    Misceláneo: 0,
+    Organización: 0,
+    Persona: 0,
+  };
+
+  if (entities?.entities_list) {
+    entities.entities_list.forEach(entity => {
+      (metrics as any)[entity.type]++;  
+    });
+  }
+
+  const total = Object.values(metrics).reduce((acc, value) => acc + value, 0);
 
   return (
     <div className="bg-white rounded-lg p-6 h-[200px] flex flex-col">
@@ -19,26 +34,26 @@ export default function EntityMetrics({ metrics }: EntityMetricsProps) {
         <MetricItem
           icon={User2}
           label="Personas"
-          value={metrics.people}
-          percentage={(metrics.people / 100) * 100}
+          value={metrics.Persona}
+          percentage={(metrics.Persona / 100) * 100}
         />
         <MetricItem
           icon={Flag}
           label="Lugares"
-          value={metrics.places}
-          percentage={(metrics.places / 100) * 100}
+          value={metrics.Lugar}
+          percentage={(metrics.Lugar / 100) * 100}
         />
         <MetricItem
           icon={Calendar}
           label="Fechas"
-          value={metrics.dates}
-          percentage={(metrics.dates / 100) * 100}
+          value={metrics.Fecha}
+          percentage={(metrics.Fecha / 100) * 100}
         />
         <MetricItem
           icon={Shield}
           label="Organizaciones"
-          value={metrics.organizations}
-          percentage={(metrics.organizations / 100) * 100}
+          value={metrics.Organización}
+          percentage={(metrics.Organización / 100) * 100}
         />
       </div>
     </div>
@@ -56,6 +71,7 @@ function MetricItem({
   value: number; 
   percentage: number;
 }) {
+  console.log(value)
   return (
     <div>
       <div className="flex items-center gap-2 text-gray-500 mb-2">
