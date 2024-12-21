@@ -91,7 +91,7 @@ export default function ArticleContent({ title, content, author, date, activeFil
         <span>{date}</span>
       </div>
       <div className="prose max-w-none">
-        {content.split('\n').map((paragraph, index) => (
+        {content.split('\n').map((_paragraph, index) => (
           <p 
             key={index} 
             className="mb-4 text-gray-700 leading-relaxed"

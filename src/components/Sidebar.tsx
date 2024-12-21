@@ -10,7 +10,7 @@ export default function Sidebar() {
     { icon: BarChart2, path: '/stats', label: 'Statistics' },
     { icon: Mail, path: '/messages', label: 'Messages' },
     { icon: Settings, path: '/settings', label: 'Settings' },
-    { icon: HelpCircle, path: '/help', label: 'Help' },
+    { icon: HelpCircle, path: '/loaded-articles', label: 'Data' },
   ];
 
   return (

@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import ArticleDetail from './pages/ArticleDetail';
+import LoadedArticlesPage from './pages/LoadedArticlesPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/article/:id" element={<ArticleDetail />} />
+            <Route path="/loaded-articles" element={<LoadedArticlesPage />} />
           </Routes>
         </main>
       </div>
