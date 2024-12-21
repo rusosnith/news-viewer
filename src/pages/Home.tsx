@@ -7,7 +7,6 @@ import SentimentAnalysis from '../components/SentimentAnalysis';
 import { mockEntityMetrics } from '../data/mockData';
 import { calculateMetrics } from '../components/articleAnalytics';
 import loadArticles from '../components/articleLoader';
-import { Article } from '../types';
 
 const Home: React.FC = () => {
   const articles = loadArticles();
