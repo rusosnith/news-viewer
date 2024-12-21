@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from 'react'
 
-import output from '../data/news_demo_output.json';
 import { Article } from '../types';
 
 interface ArticleContentProps {
@@ -49,17 +48,15 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author,
   console.log(entities)
   const processedContent = useMemo(() => {
 
+
     let processedText = content.split('\n').map((paragraph) => `<p>${paragraph.trim()}</p>`).join('\n');
 
     entities?.entities_list.forEach(({type, text: word}) => {
       const regex = new RegExp(`\\b${word}\\b`, "g");
       const tagType = type as keyof typeof tagColors;
-      const shouldShow =
-        activeFilters.length === 0 ||
-        (tagColors[tagType].filter === "entities" &&
-          activeFilters.includes("entities")) ||
-        (tagColors[tagType].filter === "adjectives" &&
-          activeFilters.includes("adjectives"));
+      const shouldShow = 
+      (tagType === 'Organización' || tagType === 'Persona')
+      ? !activeFilters.includes('entities') : true
 
       if (shouldShow) {
         processedText = processedText.replace(

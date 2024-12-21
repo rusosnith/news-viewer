@@ -10,7 +10,7 @@ const loadArticles = (): Article[] => {
             ...article,
             adjectives: output.adjectives || {},
             entities: output.entities as any || {},
-            metrics: output.metrics || {},
+            metrics: output.metrics as any || {},
             sentiment: output.sentiment || {},
             sources: output.sources || {},
             status: output.status || 'desconocido'
