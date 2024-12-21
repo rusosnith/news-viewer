@@ -3,7 +3,6 @@ import { useState } from 'react';
 import ArticleHeader from '../components/ArticleHeader';
 import ArticleContent from '../components/ArticleContent';
 import EntityMetrics from '../components/EntityMetrics';
-import SentimentAnalysis from '../components/SentimentAnalysis';
 import AdjectivesMetrics from '../components/AdjectivesMetrics';
 import SourcesMetrics from '../components/SourcesMetrics';
 import loadArticles from '../components/articleLoader';
@@ -20,7 +19,6 @@ export default function ArticleDetail() {
     status: '',
     entities: [],
     adjectives: [],
-    sentiment: { negative: 0, neutral: 0, positive: 0 },
     sources: [],
     cuerpo: '',
     fecha: '',
@@ -52,11 +50,6 @@ export default function ArticleDetail() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <EntityMetrics metrics={article.entities} />
             <AdjectivesMetrics metrics={article.adjectives} />
-            <SentimentAnalysis
-              negative={article.sentiment.negative}
-              neutral={article.sentiment.neutral}
-              positive={article.sentiment.positive}
-            />
           </div>
         </div>
 
@@ -77,16 +70,12 @@ export default function ArticleDetail() {
                 author={article.autor}
                 date={article.fecha || ''}
                 activeFilters={activeFilters}
+                entities={article.entities} // Pass entities to ArticleContent
               />
             </div>
             <div className="space-y-4 md:space-y-6">
               <EntityMetrics metrics={article.entities} />
               <AdjectivesMetrics metrics={article.adjectives} />
-              <SentimentAnalysis
-                negative={article.sentiment.negative}
-                neutral={article.sentiment.neutral}
-                positive={article.sentiment.positive}
-              />
               <SourcesMetrics sources={article.sources} />
             </div>
           </div>
