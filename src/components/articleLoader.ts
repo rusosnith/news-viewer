@@ -29,9 +29,23 @@ const loadArticles = (): Article[] => {
         const output = outputData.find(data => data.id === article.id);
         return {
             ...article,
-            ...output
+            adjectives: output?.adjectives || {},
+            entities: output?.entities || {},
+            metrics: output?.metrics || {},
+            sentiment: output?.sentiment || {},
+            sources: output?.sources || {}
         };
     });
 };
 
 export default loadArticles;
+
+export function calculateMetrics() {
+  // Your implementation here
+  return {
+    totalArticles: 0,
+    totalAuthors: 0,
+    totalCategories: 0,
+    totalWords: 0,
+  };
+}

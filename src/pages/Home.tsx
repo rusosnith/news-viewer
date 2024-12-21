@@ -3,9 +3,14 @@ import ArticleList from '../components/ArticleList';
 import AdjectivesMetrics from '../components/AdjectivesMetrics';
 import EntityMetrics from '../components/EntityMetrics';
 import SentimentAnalysis from '../components/SentimentAnalysis';
-import { mockMetrics, mockArticles, mockEntityMetrics } from '../data/mockData';
+import { mockEntityMetrics } from '../data/mockData';
+import { calculateMetrics } from '../components/articleAnalytics';
+import loadArticles from '../components/articleLoader';
+import { Article } from '../types';
 
 export default function Home() {
+  const realArticles: Article[] = loadArticles();
+  const realMetrics = calculateMetrics();
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -15,7 +20,7 @@ export default function Home() {
         </div>
 
         <div className="mb-8">
-          <MetricsCard metrics={mockMetrics} />
+          <MetricsCard metrics={realMetrics} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -36,7 +41,7 @@ export default function Home() {
 
         <div className="mt-8 md:mt-12">
           <h2 className="text-xl font-semibold mb-4">Notas</h2>
-          <ArticleList articles={mockArticles} />
+          <ArticleList articles={realArticles} />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ interface ArticleListProps {
 }
 
 export default function ArticleList({ articles }: ArticleListProps) {
-  const getStatusColor = (status: Article['status']) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'reviewed':
         return 'text-green-600';
@@ -30,17 +30,17 @@ export default function ArticleList({ articles }: ArticleListProps) {
         >
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold mb-1">{article.title}</h3>
+              <h3 className="text-lg font-semibold mb-1">{article.titulo}</h3>
               <div className="flex items-center space-x-4 text-sm text-gray-500">
-                <span>{article.author}</span>
-                {article.date && <span>{article.date}</span>}
+                <span>{article.autor || 'sin autor'}</span> 
+                {article.fecha && <span>— {article.fecha}</span>}
               </div>
             </div>
             <div className="flex items-center space-x-6">
               <div className={`flex items-center space-x-2 ${getStatusColor(article.status)}`}>
                 {article.status === 'unreviewed' && <AlertTriangle className="w-4 h-4" />}
                 <span className="font-medium">{article.status}</span>
-                {article.quality && <span>{article.quality}%</span>}
+                {article.metrics?.quality && <span>{article.metrics.quality}%</span>}
               </div>
               <div className="flex items-center space-x-2 text-blue-600">
                 <span className="text-sm font-medium">Abrir artículo</span>
