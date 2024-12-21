@@ -3,13 +3,12 @@ interface MetricsCardProps {
     totalArticles: number;
     totalAuthors: number;
     totalCategories: number;
-    totalWords: number;
   };
 }
 
 export default function MetricsCard({ metrics }: MetricsCardProps) {
   return (
-    <div className="grid grid-cols-4 gap-4 bg-white p-6 rounded-lg shadow-sm">
+    <div className="grid grid-cols-3 gap-4 bg-white p-6 rounded-lg shadow-sm">
       <div>
         <p className="text-2xl font-semibold">{metrics.totalArticles}</p>
         <p className="text-sm text-gray-500">Artículos</p>
@@ -21,10 +20,6 @@ export default function MetricsCard({ metrics }: MetricsCardProps) {
       <div>
         <p className="text-2xl font-semibold">{metrics.totalCategories}</p>
         <p className="text-sm text-gray-500">Categorías</p>
-      </div>
-      <div>
-        <p className="text-2xl font-semibold">{metrics.totalWords}</p>
-        <p className="text-sm text-gray-500">Palabras</p>
       </div>
     </div>
   );

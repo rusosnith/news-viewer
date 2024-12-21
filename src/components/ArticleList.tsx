@@ -32,12 +32,12 @@ export default function ArticleList({ articles }: ArticleListProps) {
             <div className="flex-1">
               <h3 className="text-lg font-semibold mb-1">{article.titulo}</h3>
               <div className="flex items-center space-x-4 text-sm text-gray-500">
-                <span>{article.autor || 'sin autor'}</span> 
+                <span>{article.autor || 'sin autor'}</span>
                 {article.fecha && <span>— {article.fecha}</span>}
               </div>
             </div>
             <div className="flex items-center space-x-6">
-              <div className={`flex items-center space-x-2 ${getStatusColor(article.status)}`}>
+              <div className={`flex items-center space-x-2 ${getStatusColor(article.status || 'unknown')}`}>
                 {article.status === 'unreviewed' && <AlertTriangle className="w-4 h-4" />}
                 <span className="font-medium">{article.status}</span>
                 {article.metrics?.quality && <span>{article.metrics.quality}%</span>}

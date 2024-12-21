@@ -4,7 +4,7 @@ import { calculateMetrics } from '../components/articleAnalytics';
 
 const LoadedArticlesPage: React.FC = () => {
     const articles = loadArticles();
-    const metrics = calculateMetrics();
+    const metrics = calculateMetrics(articles);
 
     return (
         <div>

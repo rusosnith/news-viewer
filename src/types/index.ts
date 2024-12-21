@@ -1,11 +1,24 @@
 export interface Article {
   id: string;
-  title: string;
-  author: string;
-  status: 'pending' | 'reviewed' | 'unreviewed';
-  quality?: number;
-  content?: string;
-  date?: string;
+  hora: string;
+  link_noticia: string;
+  link_foto: string;
+  autor: string;
+  categorias: string[];
+  cuerpo: string;
+  volanta: string;
+  fecha: string;
+  fecha_resumen: string;
+  etiquetas: string[];
+  titulo: string;
+  resumen: string;
+  medio: string;
+  adjectives?: any;
+  entities?: any;
+  metrics?: any;
+  sentiment?: any;
+  sources?: any;
+  status?: string;
 }
 
 export interface Metrics {

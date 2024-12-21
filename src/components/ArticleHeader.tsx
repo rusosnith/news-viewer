@@ -40,7 +40,7 @@ export default function ArticleHeader({ article, activeFilters, onFilterChange }
         <div className="flex gap-8">
           <div className="text-sm">
             <span className="text-gray-600">Autor: </span>
-            <span className="font-medium">{article.author}</span>
+            <span className="font-medium">{article.autor || 'sin autor'}</span>
           </div>
           <div className="text-sm">
             <span className="text-gray-600">Estado: </span>
@@ -51,7 +51,7 @@ export default function ArticleHeader({ article, activeFilters, onFilterChange }
           <div className="text-sm">
             <span className="text-gray-600">Calidad: </span>
             <span className="font-medium">
-              {article.quality ? `${article.quality}%` : 'Sin revisión'}
+              {article.metrics?.quality ? `${article.metrics.quality}%` : 'Sin revisión'}
             </span>
           </div>
         </div>
