@@ -45,7 +45,6 @@ const tagColors = {
 };
 
 const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author, date, activeFilters,entities }) => {
-  console.log(entities)
   const processedContent = useMemo(() => {
 
 

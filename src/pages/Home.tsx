@@ -24,7 +24,8 @@ const Home: React.FC = () => {
           <MetricsCard metrics={metrics} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+{/* TODO: volver a poner con datos reales */}
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <div>
             <EntityMetrics metrics={mockEntityMetrics} />
           </div>
@@ -38,7 +39,7 @@ const Home: React.FC = () => {
               positive={15}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-8 md:mt-12">
           <h2 className="text-xl font-semibold mb-4">Notas</h2>
