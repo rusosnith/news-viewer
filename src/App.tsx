@@ -1,10 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import ArticleDetail from "./pages/ArticleDetail";
 import LoadedArticlesPage from "./pages/LoadedArticlesPage";
-import { ErrorBoundary } from "react-error-boundary";
 
 function App() {
   return (
@@ -13,13 +12,12 @@ function App() {
         <Header />
         <Sidebar />
         <main className="pl-0 md:pl-16 pt-16">
-          <ErrorBoundary fallback={<div>algo salio mal</div>}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/article/:id" element={<ArticleDetail />} />
-              <Route path="/loaded-articles" element={<LoadedArticlesPage />} />
-            </Routes>
-          </ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/news-viewer" element={<Navigate to="/" />} />
+            <Route path="/article/:id" element={<ArticleDetail />} />
+            <Route path="/loaded-articles" element={<LoadedArticlesPage />} />
+          </Routes>
         </main>
       </div>
     </Router>
