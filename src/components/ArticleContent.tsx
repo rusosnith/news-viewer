@@ -59,10 +59,10 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author,
         processedText = processedText.replace(
           regex,
           `<span class="relative inline-block group cursor-pointer tag">
-            <span class="relative inline-block text-black ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} px-1">
+            <span class="relative inline-block text-black transition-colors ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} group-hover:bg-opacity-100 px-1 ">
               ${word}
-              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap ${tagColors[tagType].base} z-10">
-          ${tagColors[tagType].label}
+              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap transition-colors ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} group-hover:bg-opacity-100 z-10">
+                ${tagColors[tagType].label}
               </span>
             </span>
           </span>`

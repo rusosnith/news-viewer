@@ -1,11 +1,37 @@
-import { User2, Flag, Calendar, Shield } from 'lucide-react';
+import { User2, Flag, Calendar, Shield, ChevronDown } from 'lucide-react';
 import type { Article, EntityMetrics } from '../types';
+import { useState } from 'react';
 
 interface EntityMetricsProps {
   entities: Article['entities'];
 }
 
+const typeConfig = {
+  Persona: { icon: User2, label: "Personas" },
+  Lugar: { icon: Flag, label: "Lugares" },
+  Fecha: { icon: Calendar, label: "Fechas" },
+  Organización: { icon: Shield, label: "Organizaciones" },
+  Misceláneo: { icon: Shield, label: "Otros" },
+};
+
 export default function EntityMetrics({ entities }: EntityMetricsProps) {
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+
+  const entityCounts: Record<string, Record<string, number>> = {
+    Persona: {},
+    Lugar: {},
+    Fecha: {},
+    Organización: {},
+    Misceláneo: {},
+  };
+
+  // Contar ocurrencias de cada entidad por tipo
+  entities?.entities_list?.forEach(entity => {
+    if (!entityCounts[entity.type][entity.text]) {
+      entityCounts[entity.type][entity.text] = 0;
+    }
+    entityCounts[entity.type][entity.text]++;
+  });
 
   const metrics: EntityMetrics = {
     Fecha: 0,
@@ -23,67 +49,68 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
 
   const total = Object.values(metrics).reduce((acc, value) => acc + value, 0);
 
-  return (
-    <div className="bg-white rounded-lg p-6 h-[200px] flex flex-col">
-      <div className="flex justify-between items-center mb-auto">
-        <h3 className="text-xl font-medium">Entidades</h3>
-        <span className="text-cyan-500 text-2xl font-medium">{total}</span>
-      </div>
-      
-      <div className="grid grid-cols-4 gap-4">
-        <MetricItem
-          icon={User2}
-          label="Personas"
-          value={metrics.Persona}
-          percentage={(metrics.Persona / 100) * 100}
-        />
-        <MetricItem
-          icon={Flag}
-          label="Lugares"
-          value={metrics.Lugar}
-          percentage={(metrics.Lugar / 100) * 100}
-        />
-        <MetricItem
-          icon={Calendar}
-          label="Fechas"
-          value={metrics.Fecha}
-          percentage={(metrics.Fecha / 100) * 100}
-        />
-        <MetricItem
-          icon={Shield}
-          label="Organizaciones"
-          value={metrics.Organización}
-          percentage={(metrics.Organización / 100) * 100}
-        />
-      </div>
-    </div>
-  );
-}
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
 
-function MetricItem({ 
-  icon: Icon, 
-  label, 
-  value, 
-  percentage 
-}: { 
-  icon: any; 
-  label: string; 
-  value: number; 
-  percentage: number;
-}) {
   return (
-    <div>
-      <div className="flex items-center gap-2 text-gray-500 mb-2">
-        <Icon className="w-5 h-5" />
-        <span className="text-sm">{label}</span>
+    <div className="bg-white rounded-lg p-6">
+      <h3 className="text-xl font-medium mb-6">Entidades</h3>
+      
+      <div className="space-y-4">
+        {Object.entries(entityCounts).map(([type, entities]) => {
+          const sortedEntities = Object.entries(entities)
+            .sort(([, a], [, b]) => b - a);
+          
+          if (sortedEntities.length === 0) return null;
+
+          const TypeIcon = typeConfig[type as keyof typeof typeConfig].icon;
+          const percentage = (metrics[type as keyof EntityMetrics] / total) * 100;
+
+          return (
+            <div key={type} className="border rounded-lg p-4">
+              <button
+                onClick={() => toggleSection(type)}
+                className="w-full"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <TypeIcon className="w-5 h-5 text-gray-500" />
+                    <span className="font-medium">{typeConfig[type as keyof typeof typeConfig].label}</span>
+                    <span className="text-gray-400 text-sm">
+                      ({metrics[type as keyof EntityMetrics]})
+                    </span>
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform text-gray-400
+                      ${expandedSection === type ? 'transform rotate-180' : ''}`}
+                  />
+                </div>
+                
+                <div className="bg-cyan-100 rounded-full">
+                  <div 
+                    className="h-2 bg-cyan-500 rounded-full transition-all" 
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+              </button>
+
+              {expandedSection === type && (
+                <div className="mt-4 text-sm text-gray-600">
+                  {sortedEntities.map(([name, count], index) => (
+                    <span key={name} className="inline-block">
+                      {name} <span className="text-gray-400">{count}</span>
+                      {index < sortedEntities.length - 1 && (
+                        <span className="mx-2 text-gray-300">-</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
-      <div className="bg-cyan-100 rounded-full">
-        <div 
-          className="h-2 bg-cyan-500 rounded-full" 
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-      <span className="text-sm text-gray-700 mt-1 block">{value}</span>
     </div>
   );
 }
