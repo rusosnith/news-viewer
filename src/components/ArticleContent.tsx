@@ -53,19 +53,16 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author,
     entities?.entities_list.forEach(({type, text: word}) => {
       const regex = new RegExp(`\\b${word}\\b`, "g");
       const tagType = type as keyof typeof tagColors;
-      const shouldShow = 
-      (tagType === 'Organización' || tagType === 'Persona')
-      ? !activeFilters.includes('entities') : true
+      const shouldShow = !activeFilters.includes(tagColors[tagType].filter);
 
       if (shouldShow) {
         processedText = processedText.replace(
           regex,
-          `<span class="relative inline-block group cursor-pointer">
-            <span class="relative inline-block text-black">
-              <span class="absolute inset-0 transition-all duration-200 ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover}"></span>
-              <span class="relative px-1">${word}</span>
-              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap ${tagColors[tagType].base}">
-                ${tagColors[tagType].label}
+          `<span class="relative inline-block group cursor-pointer tag">
+            <span class="relative inline-block text-black ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} px-1">
+              ${word}
+              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap ${tagColors[tagType].base} z-10">
+          ${tagColors[tagType].label}
               </span>
             </span>
           </span>`
