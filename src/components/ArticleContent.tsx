@@ -9,42 +9,49 @@ interface ArticleContentProps {
   date: string;
   activeFilters: string[];
   entities: Article['entities'];
+  adjectives?: Article['adjectives'];
 }
 
 const tagColors = {
   Persona: {
-    base: 'bg-blue-100',
-    hover: 'bg-blue-200',
+    base: 'bg-cyan-100',
+    hover: 'bg-cyan-200',
     label: 'Persona',
     filter: 'entities'
   },
   Lugar: {
-    base: 'bg-green-100',
-    hover: 'bg-green-200',
+    base: 'bg-cyan-100',
+    hover: 'bg-cyan-200',
     label: 'Lugar',
     filter: 'entities'
   },
   Organización: {
-    base: 'bg-yellow-100',
-    hover: 'bg-yellow-200',
+    base: 'bg-cyan-100',
+    hover: 'bg-cyan-200',
     label: 'Organización',
     filter: 'entities'
   },
   Misceláneo: {
-    base: 'bg-purple-100',
-    hover: 'bg-purple-200',
+    base: 'bg-cyan-100',
+    hover: 'bg-cyan-200',
     label: 'Misceláneo',
     filter: 'entities'
   },
   Fecha: {
-    base: 'bg-orange-100',
-    hover: 'bg-orange-200',
+    base: 'bg-cyan-100',
+    hover: 'bg-cyan-200',
     label: 'Fecha',
     filter: 'entities'
+  },
+  Adjetivo: {
+    base: 'bg-purple-100',
+    hover: 'bg-purple-200',
+    label: 'Adjetivo',
+    filter: 'adjectives'
   }
 };
 
-const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author, date, activeFilters,entities }) => {
+const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author, date, activeFilters,entities, adjectives }) => {
   const processedContent = useMemo(() => {
 
 
@@ -58,10 +65,10 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author,
       if (shouldShow) {
         processedText = processedText.replace(
           regex,
-          `<span class="relative inline-block group cursor-pointer tag">
-            <span class="relative inline-block text-black transition-colors ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} group-hover:bg-opacity-100 px-1 ">
+          `<span class="relative inline-block peer cursor-pointer tag">
+            <span class="relative inline-block text-black transition-opacity ${tagColors[tagType].base} hover:bg-opacity-100 px-1 peer-none:bg-opacity-100 [.tag:hover_&:not(:hover)]:bg-opacity-40">
               ${word}
-              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap transition-colors ${tagColors[tagType].base} group-hover:${tagColors[tagType].hover} group-hover:bg-opacity-100 z-10">
+              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap ${tagColors[tagType].base} z-10">
                 ${tagColors[tagType].label}
               </span>
             </span>
@@ -72,8 +79,29 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ title, content, author,
       }
     });
 
+    Array.isArray(adjectives?.adjectives_list) && adjectives.adjectives_list.forEach((adjective) => {
+      const regex = new RegExp(`\\b${adjective.text}\\b`, "g");
+      const shouldShow = !activeFilters.includes('adjectives');
+
+      if (shouldShow) {
+        processedText = processedText.replace(
+          regex,
+          `<span class="relative inline-block peer cursor-pointer tag">
+            <span class="relative inline-block text-black transition-opacity bg-purple-100 hover:bg-opacity-100 px-1 peer-none:bg-opacity-100 [.tag:hover_&:not(:hover)]:bg-opacity-40">
+              ${adjective.text}
+              <span class="absolute right-0 top-full text-[0.7rem] px-1 opacity-0 group-hover:opacity-100 whitespace-nowrap bg-purple-100 z-10">
+                Adjetivo
+              </span>
+            </span>
+          </span>`
+        );
+      } else {
+        processedText = processedText.replace(regex, adjective.text);
+      }
+    });
+
     return processedText;
-  }, [content, activeFilters]);
+  }, [content, activeFilters, entities, adjectives]);
 
   return (
     <div className="bg-white rounded-lg p-6">

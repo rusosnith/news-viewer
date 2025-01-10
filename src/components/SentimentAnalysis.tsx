@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faFaceFrown, 
+  faFaceMeh, 
+  faFaceSmile 
+} from '@fortawesome/free-regular-svg-icons';
+
 interface SentimentAnalysisProps {
   negative: number;
   neutral: number;

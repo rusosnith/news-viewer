@@ -1,4 +1,12 @@
-import { User2, Flag, Calendar, Shield, ChevronDown } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faUser, 
+  faLocationDot, 
+  faCalendarDays, 
+  faBuilding, 
+  faEllipsis, 
+  faChevronDown 
+} from '@fortawesome/free-solid-svg-icons';
 import type { Article, EntityMetrics } from '../types';
 import { useState } from 'react';
 
@@ -7,11 +15,11 @@ interface EntityMetricsProps {
 }
 
 const typeConfig = {
-  Persona: { icon: User2, label: "Personas" },
-  Lugar: { icon: Flag, label: "Lugares" },
-  Fecha: { icon: Calendar, label: "Fechas" },
-  Organización: { icon: Shield, label: "Organizaciones" },
-  Misceláneo: { icon: Shield, label: "Otros" },
+  Persona: { icon: faUser, label: "Personas" },
+  Lugar: { icon: faLocationDot, label: "Lugares" },
+  Fecha: { icon: faCalendarDays, label: "Fechas" },
+  Organización: { icon: faBuilding, label: "Organizaciones" },
+  Misceláneo: { icon: faEllipsis, label: "Otros" },
 };
 
 export default function EntityMetrics({ entities }: EntityMetricsProps) {
@@ -55,7 +63,10 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
 
   return (
     <div className="bg-white rounded-lg p-6">
-      <h3 className="text-xl font-medium mb-6">Entidades</h3>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-medium">Entidades</h3>
+        <span className="text-cyan-500 text-2xl font-medium">{total}</span>
+      </div>
       
       <div className="space-y-4">
         {Object.entries(entityCounts).map(([type, entities]) => {
@@ -64,7 +75,6 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
           
           if (sortedEntities.length === 0) return null;
 
-          const TypeIcon = typeConfig[type as keyof typeof typeConfig].icon;
           const percentage = (metrics[type as keyof EntityMetrics] / total) * 100;
 
           return (
@@ -75,13 +85,17 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <TypeIcon className="w-5 h-5 text-gray-500" />
+                    <FontAwesomeIcon 
+                      icon={typeConfig[type as keyof typeof typeConfig].icon} 
+                      className="w-5 h-5 text-cyan-500" 
+                    />
                     <span className="font-medium">{typeConfig[type as keyof typeof typeConfig].label}</span>
                     <span className="text-gray-400 text-sm">
                       ({metrics[type as keyof EntityMetrics]})
                     </span>
                   </div>
-                  <ChevronDown
+                  <FontAwesomeIcon 
+                    icon={faChevronDown}
                     className={`w-4 h-4 transition-transform text-gray-400
                       ${expandedSection === type ? 'transform rotate-180' : ''}`}
                   />

@@ -1,4 +1,11 @@
 import type { Article } from '../types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faTag, 
+  faFont, 
+  faFaceSmile, 
+  faQuoteLeft 
+} from '@fortawesome/free-solid-svg-icons';
 
 interface ArticleHeaderProps {
   article: Article;
@@ -7,10 +14,10 @@ interface ArticleHeaderProps {
 }
 
 const filters = [
-  { id: 'entities', label: 'Entidades', color: 'blue' },
-  { id: 'adjectives', label: 'Adjetivos', color: 'purple' },
-  { id: 'sentiments', label: 'Sentimientos', color: 'orange' },
-  { id: 'sources', label: 'Fuentes', color: 'amber' },
+  { id: 'entities', label: 'Entidades', icon: faTag, color: 'cyan' },
+  { id: 'adjectives', label: 'Adjetivos', icon: faFont, color: 'purple' },
+  { id: 'sentiments', label: 'Sentimientos', icon: faFaceSmile, color: 'orange' },
+  { id: 'sources', label: 'Fuentes', icon: faQuoteLeft, color: 'amber' },
 ];
 
 export default function ArticleHeader({ article, activeFilters, onFilterChange }: ArticleHeaderProps) {
@@ -59,17 +66,18 @@ export default function ArticleHeader({ article, activeFilters, onFilterChange }
 
       <div className="flex gap-2">
         <span className="text-sm font-medium text-gray-600 mr-2">Resaltar:</span>
-        {filters.map(({ id, label, color }) => (
+        {filters.map(({ id, label, icon, color }) => (
           <button
             key={id}
             onClick={() => toggleFilter(id)}
-            className={`px-3 py-1.5 rounded-md transition-colors duration-200 text-sm font-medium
+            className={`px-3 py-1.5 rounded-md transition-colors duration-200 text-sm font-medium flex items-center gap-2
               ${activeFilters.includes(id)
                 ? `bg-gray-200 text-gray-500`
                 : `bg-${color}-100 text-${color}-600 hover:bg-${color}-200`
               }`}
           >
-            {label}
+            <FontAwesomeIcon icon={icon} className={`text-${color}-600`} />
+            <span>{label}</span>
           </button>
         ))}
       </div>

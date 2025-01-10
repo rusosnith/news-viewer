@@ -1,4 +1,10 @@
-import { ChevronRight, AlertTriangle } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faCircleCheck, 
+  faCircleExclamation, 
+  faCircleXmark,
+  faChevronRight 
+} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import type { Article } from '../types';
 
@@ -20,6 +26,19 @@ export default function ArticleList({ articles }: ArticleListProps) {
     }
   };
 
+  const getStatusIcon = (status: Article['status']) => {
+    switch (status) {
+      case 'reviewed':
+        return <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" />;
+      case 'pending':
+        return <FontAwesomeIcon icon={faCircleExclamation} className="text-yellow-500" />;
+      case 'unreviewed':
+        return <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-4">
       {articles.map((article) => (
@@ -38,13 +57,13 @@ export default function ArticleList({ articles }: ArticleListProps) {
             </div>
             <div className="flex items-center space-x-6">
               <div className={`flex items-center space-x-2 ${getStatusColor(article.status || 'unknown')}`}>
-                {article.status === 'unreviewed' && <AlertTriangle className="w-4 h-4" />}
+                {article.status === 'unreviewed' && <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />}
                 <span className="font-medium">{article.status}</span>
                 {article.metrics?.quality && <span>{article.metrics.quality}%</span>}
               </div>
               <div className="flex items-center space-x-2 text-blue-600">
                 <span className="text-sm font-medium">Abrir artículo</span>
-                <ChevronRight className="w-5 h-5" />
+                <FontAwesomeIcon icon={faChevronRight} className="text-gray-400" />
               </div>
             </div>
           </div>

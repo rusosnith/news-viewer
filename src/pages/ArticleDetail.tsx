@@ -7,6 +7,10 @@ import AdjectivesMetrics from '../components/AdjectivesMetrics';
 import SourcesMetrics from '../components/SourcesMetrics';
 import loadArticles from '../components/articleLoader';
 
+export interface Article {
+  adjectives?: string[];
+}
+
 export default function ArticleDetail() {
   const { id } = useParams();
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
@@ -29,7 +33,10 @@ export default function ArticleDetail() {
           <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             <EntityMetrics entities={article.entities} />
-            <AdjectivesMetrics metrics={article.metrics} />
+            <AdjectivesMetrics 
+              metrics={article.metrics} 
+              adjectives={article.adjectives}
+            />
           </div>
         </div>
 
@@ -50,12 +57,16 @@ export default function ArticleDetail() {
                 author={article.autor}
                 date={article.fecha || ''}
                 activeFilters={activeFilters}
-                entities={article.entities} // Pass entities to ArticleContent
+                entities={article.entities}
+                adjectives={article.adjectives}
               />
             </div>
             <div className="space-y-4 md:space-y-6">
               <EntityMetrics entities={article.entities} />
-              <AdjectivesMetrics metrics={article.metrics} />
+              <AdjectivesMetrics 
+                metrics={article.metrics} 
+                adjectives={article.adjectives}
+              />
               {/* <SourcesMetrics sources={article.sources} /> */}
             </div>
           </div>

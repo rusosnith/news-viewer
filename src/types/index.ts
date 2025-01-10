@@ -1,4 +1,3 @@
-
 export interface Article {
   id: string;
   hora: string;
@@ -15,7 +14,21 @@ export interface Article {
   resumen: string;
   medio: string;
   // Add additional fields from output data
-  adjectives?: any;
+  adjectives?: {
+    adjectives_freq: [string, number][];
+    adjectives_list: {
+      text: string;
+      start_char: number;
+      end_char: number;
+      features: {
+        Gender?: string;
+        Number?: string;
+        VerbForm?: string;
+        NumType?: string;
+        Degree?: string;
+      };
+    }[];
+  };
   entities?: {entities_freq: [any,any][], entities_list:  { text: string; type: string; start_char: number; end_char: number;sentiment: number }[]};
   metrics?: Metrics;
   sentiment?: any;
@@ -89,10 +102,6 @@ export interface Sentiment {
 }
 
 export interface Sources {
-  num_afirmaciones:            NumAdjectives;
-  num_afirmaciones_explicitas: NumAdjectives;
-  num_conectores:              NumAdjectives;
-  num_conectores_unique:       NumAdjectives;
-  num_referenciados:           NumAdjectives;
-  num_referenciados_unique:    NumAdjectives;
+  link: string;
+  name: string;
 }

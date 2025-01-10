@@ -1,4 +1,6 @@
 import { Article } from "../types";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuoteLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 interface SourcesMetricsProps {
@@ -14,9 +16,9 @@ export default function SourcesMetrics({ metrics }: SourcesMetricsProps) {
       </h3>
 
       <div className="mt-4 space-y-3">
-        {metrics?.sources.map((source, index) => (
+        {Array.isArray(metrics?.sources) && metrics.sources.map((source: { link: string; name: string }, index: number) => (
           <div key={index} className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-amber-400 rounded-full" />
+            <FontAwesomeIcon icon={faQuoteLeft} className="w-5 h-5 text-gray-500" />
             <a
               href={source.link}
               target="_blank"

@@ -1,3 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faNewspaper, 
+  faUsers, 
+  faCheck,
+  faExclamation 
+} from '@fortawesome/free-solid-svg-icons';
+
 interface MetricsCardProps {
   metrics: {
     totalArticles: number;
