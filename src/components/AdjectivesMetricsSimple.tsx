@@ -7,7 +7,7 @@ interface AdjectivesMetricsProps {
 }
 
 export default function AdjectivesMetricsSimple({ metrics }: AdjectivesMetricsProps) {
-  const percentage = metrics?.adjectives.perc_adjectives.value * 100;
+  const percentage = (metrics?.adjectives?.perc_adjectives?.value ?? 0) * 100;
   const maxValue = 679; // Valor máximo según la imagen
   
   return (

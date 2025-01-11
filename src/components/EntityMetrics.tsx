@@ -61,6 +61,11 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
     setExpandedSection(expandedSection === section ? null : section);
   };
 
+  // Filtrar y ordenar las categorías por cantidad
+  const sortedCategories = Object.entries(metrics)
+    .filter(([_type, count]) => count > 0)
+    .sort(([_typeA, countA], [_typeB, countB]) => countB - countA);
+
   return (
     <div className="bg-white rounded-lg p-6">
       <div className="flex justify-between items-center mb-6">
@@ -69,13 +74,13 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
       </div>
       
       <div className="space-y-4">
-        {Object.entries(entityCounts).map(([type, entities]) => {
-          const sortedEntities = Object.entries(entities)
+        {sortedCategories.map(([type, count]) => {
+          const sortedEntities = Object.entries(entityCounts[type])
             .sort(([, a], [, b]) => b - a);
           
           if (sortedEntities.length === 0) return null;
 
-          const percentage = (metrics[type as keyof EntityMetrics] / total) * 100;
+          const percentage = (count / total) * 100;
 
           return (
             <div key={type} className="border rounded-lg p-4">
@@ -89,10 +94,10 @@ export default function EntityMetrics({ entities }: EntityMetricsProps) {
                       icon={typeConfig[type as keyof typeof typeConfig].icon} 
                       className="w-5 h-5 text-cyan-500" 
                     />
-                    <span className="font-medium">{typeConfig[type as keyof typeof typeConfig].label}</span>
-                    <span className="text-gray-400 text-sm">
-                      ({metrics[type as keyof EntityMetrics]})
+                    <span className="font-medium">
+                      {typeConfig[type as keyof typeof typeConfig].label}
                     </span>
+                    <span className="text-gray-400 text-sm ml-2">{count}</span>
                   </div>
                   <FontAwesomeIcon 
                     icon={faChevronDown}
