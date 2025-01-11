@@ -6,6 +6,8 @@ import EntityMetrics from '../components/EntityMetrics';
 import AdjectivesMetrics from '../components/AdjectivesMetrics';
 import SourcesMetrics from '../components/SourcesMetrics';
 import loadArticles from '../components/articleLoader';
+import EntityMetricsSimple from '../components/EntityMetricsSimple';
+import AdjectivesMetricsSimple from '../components/AdjectivesMetricsSimple';
 
 export interface Article {
   adjectives?: string[];
@@ -32,11 +34,8 @@ export default function ArticleDetail() {
         <div className="mb-8 md:mb-12">
           <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <EntityMetrics entities={article.entities} />
-            <AdjectivesMetrics 
-              metrics={article.metrics} 
-              adjectives={article.adjectives}
-            />
+            <EntityMetricsSimple entities={article.entities} />
+            <AdjectivesMetricsSimple metrics={article.metrics} />
           </div>
         </div>
 
@@ -63,10 +62,7 @@ export default function ArticleDetail() {
             </div>
             <div className="space-y-4 md:space-y-6">
               <EntityMetrics entities={article.entities} />
-              <AdjectivesMetrics 
-                metrics={article.metrics} 
-                adjectives={article.adjectives}
-              />
+              <AdjectivesMetrics metrics={article.metrics} adjectives={article.adjectives} />
               {/* <SourcesMetrics sources={article.sources} /> */}
             </div>
           </div>
