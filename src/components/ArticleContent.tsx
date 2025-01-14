@@ -10,6 +10,7 @@ interface ArticleContentProps {
   activeFilters: string[];
   entities: Article['entities'];
   adjectives?: Article['adjectives'];
+  sources?: Article['sources'];
 }
 
 
@@ -22,8 +23,12 @@ const createHighlightedSpan = (text: string, tooltip: string, baseColor: string,
 </span>`  
 );
 
+const escapeRegExp = (string: string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 const ArticleContent: React.FC<ArticleContentProps> = ({ 
-  title, content, author, date, activeFilters, entities, adjectives 
+  title, content, author, date, activeFilters, entities, adjectives, sources 
 }) => {
   const processedContent = useMemo(() => {
     // Configuración de los diferentes tipos de resaltado
@@ -40,6 +45,13 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
         getTooltip: (item: any) => Object.values(item.features).filter(Boolean).join('. '),
         colors: { base: 'bg-purple-100', hover: 'bg-purple-400' }
       }
+      ,
+      {
+        items: sources?.sources_list || [],
+        filterType: 'sources',
+        getTooltip: (item: any) => item.components.referenciado?.text,
+        colors: { base: 'bg-amber-100', hover: 'bg-amber-400' }
+      }
     ];
 
     // Procesar el texto una sola vez
@@ -55,7 +67,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
           if (uniqueItems.has(word)) return text;
           uniqueItems.add(word);
 
-          const regex = new RegExp(`\\b${word}\\b`, "g");
+          const regex = new RegExp(`\\b${escapeRegExp(word)}\\b`, "g");
           return text.replace(
             regex,
             createHighlightedSpan(word, config.getTooltip(item), config.colors.base, config.colors.hover)
@@ -65,7 +77,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({
     });
 
     return processedText;
-  }, [content, activeFilters, entities, adjectives]);
+  }, [content, activeFilters, entities, adjectives, sources]);
 
   return (
     <div className="bg-white rounded-lg p-6">
