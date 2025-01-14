@@ -14,61 +14,55 @@ interface ArticleContentProps {
 
 
 const createHighlightedSpan = (text: string, tooltip: string, baseColor: string, hoverColor: string) => (
-  `<span class="relative inline-block text-black ${baseColor} hover:${hoverColor} px-1 cursor-pointer group">
-    ${text}
-    <span class="absolute left-0 top-full mt-1 text-xs px-1 opacity-0 group-hover:opacity-100 ${hoverColor} whitespace-nowrap z-10">
-      ${tooltip}
-    </span>
-  </span>`
+    `<span class="relative inline-block text-black ${baseColor} hover:${hoverColor} px-1 group cursor-pointer">
+  ${text}
+ <span class="absolute left-0 top-full mt-0 text-xs px-1 hidden group-hover:block ${hoverColor} whitespace-nowrap z-10">
+ ${tooltip}
+ </span>
+</span>`  
 );
 
 const ArticleContent: React.FC<ArticleContentProps> = ({ 
   title, content, author, date, activeFilters, entities, adjectives 
 }) => {
-  const processTextHighlights = (
-    text: string,
-    items: Array<any>,
-    filterType: string,
-    getTooltip: (item: any) => string,
-    colors: { base: string, hover: string }
-  ) => {
-    if (activeFilters.includes(filterType)) return text;
-    
-    const uniqueItems = new Set<string>();
-
-    return items?.reduce((processedText, item) => {
-      const word = item.text || item;
-      if (uniqueItems.has(word)) return processedText;
-      uniqueItems.add(word);
-
-      const regex = new RegExp(`\\b${word}\\b`, "g");
-      return processedText.replace(
-        regex,
-        createHighlightedSpan(word, getTooltip(item), colors.base, colors.hover)
-      );
-    }, text);
-  };
-
   const processedContent = useMemo(() => {
+    // Configuración de los diferentes tipos de resaltado
+    const highlightConfigs = [
+      {
+        items: entities?.entities_list || [],
+        filterType: 'entities',
+        getTooltip: (item: any) => item.type,
+        colors: { base: 'bg-cyan-100', hover: 'bg-cyan-300' }
+      },
+      {
+        items: adjectives?.adjectives_list || [],
+        filterType: 'adjectives',
+        getTooltip: (item: any) => Object.values(item.features).filter(Boolean).join('. '),
+        colors: { base: 'bg-purple-100', hover: 'bg-purple-400' }
+      }
+    ];
+
+    // Procesar el texto una sola vez
     let processedText = content.split('\n').map(p => `<p>${p.trim()}</p>`).join('\n');
 
-    // Procesar entidades
-    processedText = processTextHighlights(
-      processedText,
-      entities?.entities_list || [],
-      'entities',
-      (item) => item.type,
-      { base: 'bg-cyan-100', hover: 'bg-cyan-300' }
-    );  
+    // Aplicar cada tipo de resaltado
+    highlightConfigs.forEach(config => {
+      if (!activeFilters.includes(config.filterType)) {
+        const uniqueItems = new Set<string>();
+        
+        processedText = config.items.reduce((text, item) => {
+          const word = item.text || item;
+          if (uniqueItems.has(word)) return text;
+          uniqueItems.add(word);
 
-    // Procesar adjetivos
-    processedText = processTextHighlights(
-      processedText,
-      adjectives?.adjectives_list || [],
-      'adjectives',
-      (item) => Object.values(item.features).filter(Boolean).join('. '),
-      { base: 'bg-purple-100', hover: 'bg-purple-300' }
-    );
+          const regex = new RegExp(`\\b${word}\\b`, "g");
+          return text.replace(
+            regex,
+            createHighlightedSpan(word, config.getTooltip(item), config.colors.base, config.colors.hover)
+          );
+        }, processedText);
+      }
+    });
 
     return processedText;
   }, [content, activeFilters, entities, adjectives]);
