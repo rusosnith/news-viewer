@@ -1,29 +1,30 @@
 import React from 'react';
 import loadArticles from '../components/articleLoader';
-import { calculateMetrics } from '../components/articleAnalytics';
 
 const LoadedArticlesPage: React.FC = () => {
     const articles = loadArticles();
-    const metrics = calculateMetrics(articles);
 
     return (
         <div>
             <h1>Loaded Articles</h1>
-            <div>
-                <h2>Metrics</h2>
-                <p><strong>Total Articles:</strong> {metrics.totalArticles}</p>
-                <p><strong>Total Authors:</strong> {metrics.totalAuthors}</p>
-                <p><strong>Total Categories:</strong> {metrics.totalCategories}</p>
-                <p><strong>Total Words:</strong> {metrics.totalWords}</p>
-            </div>
             {articles.map(article => (
-                <div key={article.id}>
-                    <h2>{article.titulo}</h2>
-                    <p>{article.cuerpo}</p>
+                <div key={article.id} className="mb-6 p-4 bg-white rounded shadow">
+                    <h2 className="text-xl font-bold">{article.titulo}</h2>
+                    <p><strong>ID:</strong> {article.id}</p>
                     <p><strong>Author:</strong> {article.autor}</p>
                     <p><strong>Date:</strong> {article.fecha}</p>
                     <p><strong>Source:</strong> {article.medio}</p>
-                    {/* Add more fields as needed */}
+                    
+                    {/* Resumen de métricas */}
+                    <div className="mt-4">
+                        <h3 className="font-semibold">Metrics Summary</h3>
+                        <ul className="list-disc pl-5">
+                            <li>Adjectives: {article.metrics?.adjectives?.num_adjectives?.value || 0}</li>
+                            <li>Entities: {article.metrics?.entities?.num_entidades?.value || 0}</li>
+                            <li>Sources: {article.metrics?.sources?.num_afirmaciones?.value || 0}</li>
+                            <li>Unique References: {article.metrics?.sources?.num_referenciados_unique?.value || 0}</li>
+                        </ul>
+                    </div>
                 </div>
             ))}
         </div>
