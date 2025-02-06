@@ -22,15 +22,35 @@ const Home: React.FC = () => {
   const [selectedAutor, setSelectedAutor] = useState<string>('');
   const [selectedSeccion, setSelectedSeccion] = useState<string>('');
 
-  // Obtener listas únicas de autores y secciones
-  const { autores, secciones } = useMemo(() => {
+  // Obtener las opciones disponibles basadas en los filtros actuales
+  const { autores, secciones, autoresDisponibles, seccionesDisponibles } = useMemo(() => {
     const autoresSet = new Set(articles.map(a => a.autor));
     const seccionesSet = new Set(articles.map(a => a.seccion));
+    
+    // Obtener todas las opciones
+    const autores = Array.from(autoresSet).sort();
+    const secciones = Array.from(seccionesSet).sort();
+    
+    // Filtrar opciones disponibles basadas en la selección actual
+    const autoresDisponibles = new Set(
+      articles
+        .filter(a => !selectedSeccion || a.seccion === selectedSeccion)
+        .map(a => a.autor)
+    );
+    
+    const seccionesDisponibles = new Set(
+      articles
+        .filter(a => !selectedAutor || a.autor === selectedAutor)
+        .map(a => a.seccion)
+    );
+
     return {
-      autores: Array.from(autoresSet).sort(),
-      secciones: Array.from(seccionesSet).sort()
+      autores,
+      secciones,
+      autoresDisponibles,
+      seccionesDisponibles
     };
-  }, [articles]);
+  }, [articles, selectedAutor, selectedSeccion]);
 
   // Filtrar y ordenar artículos
   const getFilteredAndSortedArticles = () => {
@@ -140,9 +160,13 @@ const Home: React.FC = () => {
                       className="w-full px-3 py-2 border rounded-md text-sm"
                     >
                       <option value="">Todos los autores</option>
-                      {autores.map(autor => (
-                        <option key={autor} value={autor}>{autor}</option>
-                      ))}
+                      {autores
+                        .filter(autor => !selectedSeccion || autoresDisponibles.has(autor))
+                        .map(autor => (
+                          <option key={autor} value={autor}>
+                            {autor}
+                          </option>
+                        ))}
                     </select>
                   </div>
                   <div className="w-48">
@@ -152,9 +176,13 @@ const Home: React.FC = () => {
                       className="w-full px-3 py-2 border rounded-md text-sm"
                     >
                       <option value="">Todas las secciones</option>
-                      {secciones.map(seccion => (
-                        <option key={seccion} value={seccion}>{seccion}</option>
-                      ))}
+                      {secciones
+                        .filter(seccion => !selectedAutor || seccionesDisponibles.has(seccion))
+                        .map(seccion => (
+                          <option key={seccion} value={seccion}>
+                            {seccion}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>
