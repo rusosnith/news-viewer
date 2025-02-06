@@ -1,76 +1,73 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faCircleCheck, 
-  faCircleExclamation, 
-  faCircleXmark,
-  faChevronRight 
-} from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import type { Article } from '../types';
 
+type ArticleStatus = 'pendiente' | 'aprobado' | 'revisar';
+
+const getRandomStatus = (): ArticleStatus => {
+  const statuses: ArticleStatus[] = ['pendiente', 'aprobado', 'revisar'];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+};
+
+const getStatusConfig = (status: ArticleStatus) => {
+  switch (status) {
+    case 'pendiente':
+      return { color: 'text-gray-500', bgColor: 'bg-gray-50' };
+    case 'aprobado':
+      return { color: 'text-green-600', bgColor: 'bg-green-50' };
+    case 'revisar':
+      return { color: 'text-red-600', bgColor: 'bg-red-50' };
+  }
+};
+
 const ArticleList: React.FC<{ articles: Article[] }> = ({ articles }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'reviewed':
-        return 'text-green-600';
-      case 'pending':
-        return 'text-yellow-500';
-      case 'unreviewed':
-        return 'text-red-500';
-      default:
-        return 'text-gray-500';
-    }
-  };
-
-  const getStatusIcon = (status: Article['status']) => {
-    switch (status) {
-      case 'reviewed':
-        return <FontAwesomeIcon icon={faCircleCheck} className="text-green-500" />;
-      case 'pending':
-        return <FontAwesomeIcon icon={faCircleExclamation} className="text-yellow-500" />;
-      case 'unreviewed':
-        return <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="space-y-4">
-      {articles.map((article) => (
-        <div
-          key={article.id}
-          className="group bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow relative"
-        >
-          <Link
-            to={`/article/${article.id}`}
-            className="block hover:no-underline"
+      {articles.map((article) => {
+        const status = getRandomStatus();
+        const statusConfig = getStatusConfig(status);
+        
+        return (
+          <div
+            key={article.id}
+            className="group bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow relative"
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-grow pr-8">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900 group-hover:text-blue-600">
-                  {article.titulo}
-                </h3>
-                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                  <span className="bg-gray-50 px-2 py-1 rounded">
-                    Fecha: {article.fecha}
+            <Link
+              to={`/article/${article.id}`}
+              className="block hover:no-underline"
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex-grow pr-8">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 group-hover:text-blue-600 px-2">
+                    {article.titulo}
+                  </h3>
+                  <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                    <span className="bg-gray-50 px-2 py-1 rounded">
+                      Fecha: <span className="font-semibold">{article.fecha}</span>
+                    </span>
+                    <span className="bg-gray-50 px-2 py-1 rounded">
+                      Sección: <span className="font-semibold">{article.seccion}</span>
+                    </span>
+                    <span className="bg-gray-50 px-2 py-1 rounded">
+                      Autor: <span className="font-semibold">{article.autor}</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className={`text-sm px-2 py-1 rounded min-w-[140px] ${statusConfig.bgColor} ${statusConfig.color}`}>
+                    Estado: <span className="font-semibold">{status}</span>
                   </span>
-                  <span className="bg-gray-50 px-2 py-1 rounded">
-                    Sección: {article.seccion}
-                  </span>
-                  <span className="bg-gray-50 px-2 py-1 rounded">
-                    Autor: {article.autor}
-                  </span>
+                  <div className="text-gray-400 group-hover:text-blue-500 flex items-center gap-1">
+                    <span className="text-sm">Abrir</span>
+                    <FontAwesomeIcon icon={faChevronRight} className="text-xl" />
+                  </div>
                 </div>
               </div>
-              <div className="text-gray-400 group-hover:text-blue-500 absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                <span className="text-sm">Abrir</span>
-                <FontAwesomeIcon icon={faChevronRight} className="text-xl" />
-              </div>
-            </div>
-          </Link>
-        </div>
-      ))}
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 };
