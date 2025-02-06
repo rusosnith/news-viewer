@@ -10,19 +10,65 @@ import loadArticles from '../components/articleLoader';
 
 const ARTICLES_PER_PAGE = 10;
 
+type SortField = 'fecha' | 'autor' | 'seccion';
+type SortOrder = 'asc' | 'desc';
+
 const Home: React.FC = () => {
   const articles = loadArticles();
   const metrics = calculateMetrics(articles);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortField, setSortField] = useState<SortField>('fecha');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
-  // Calcular el total de páginas
-  const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+  // Ordenar artículos
+  const getSortedArticles = () => {
+    return [...articles].sort((a, b) => {
+      let comparison = 0;
+      
+      switch (sortField) {
+        case 'fecha':
+          // Convertir las fechas a formato DD/MM/YYYY antes de comparar
+          const [diaA, mesA, anioA] = a.fecha.split('/').map(Number);
+          const [diaB, mesB, anioB] = b.fecha.split('/').map(Number);
+          const fechaA = new Date(anioA, mesA - 1, diaA);
+          const fechaB = new Date(anioB, mesB - 1, diaB);
+          comparison = fechaB.getTime() - fechaA.getTime();
+          break;
+        case 'autor':
+          // Normalizar strings para comparación (quitar acentos, mayúsculas)
+          const autorA = a.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          const autorB = b.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          comparison = autorA.localeCompare(autorB);
+          break;
+        case 'seccion':
+          comparison = a.seccion.localeCompare(b.seccion);
+          break;
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  };
+
+  // Calcular el total de páginas con los artículos ordenados
+  const sortedArticles = getSortedArticles();
+  const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
 
   // Obtener los artículos de la página actual
   const getCurrentPageArticles = () => {
     const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
     const endIndex = startIndex + ARTICLES_PER_PAGE;
-    return articles.slice(startIndex, endIndex);
+    return sortedArticles.slice(startIndex, endIndex);
+  };
+
+  // Manejar cambio de ordenamiento
+  const handleSort = (field: SortField) => {
+    if (field === sortField) {
+      setSortOrder(current => current === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+    setCurrentPage(1); // Resetear a la primera página al cambiar el ordenamiento
   };
 
   return (
@@ -55,7 +101,34 @@ const Home: React.FC = () => {
         </div> */}
 
         <div className="mt-8 md:mt-12">
-          <h2 className="text-xl font-semibold mb-4">Notas</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Notas</h2>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-600">Ordenar por:</span>
+              <div className="flex gap-2">
+                {[
+                  { id: 'fecha', label: 'Fecha' },
+                  { id: 'autor', label: 'Autor' },
+                  { id: 'seccion', label: 'Sección' }
+                ].map(({ id, label }) => (
+                  <button
+                    key={id}
+                    onClick={() => handleSort(id as SortField)}
+                    className={`px-3 py-1 text-sm border rounded-md hover:bg-gray-50 flex items-center gap-1
+                      ${sortField === id ? 'bg-blue-50 border-blue-200' : ''}`}
+                  >
+                    {label}
+                    {sortField === id && (
+                      <span className="text-blue-500">
+                        {sortOrder === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          
           <ArticleList articles={getCurrentPageArticles()} />
           
           {/* Paginación */}

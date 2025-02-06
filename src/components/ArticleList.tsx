@@ -8,11 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import type { Article } from '../types';
 
-interface ArticleListProps {
-  articles: Article[];
-}
-
-export default function ArticleList({ articles }: ArticleListProps) {
+const ArticleList: React.FC<{ articles: Article[] }> = ({ articles }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'reviewed':
@@ -42,33 +38,41 @@ export default function ArticleList({ articles }: ArticleListProps) {
   return (
     <div className="space-y-4">
       {articles.map((article) => (
-        <Link
+        <div
           key={article.id}
-          to={`/article/${article.id}`}
-          className="block bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          className="group bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow relative"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold mb-1">{article.titulo}</h3>
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
-                <span>{article.autor || 'sin autor'}</span>
-                {article.fecha && <span>— {article.fecha}</span>}
+          <Link
+            to={`/article/${article.id}`}
+            className="block hover:no-underline"
+          >
+            <div className="flex justify-between items-start">
+              <div className="flex-grow pr-8">
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 group-hover:text-blue-600">
+                  {article.titulo}
+                </h3>
+                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                  <span className="bg-gray-50 px-2 py-1 rounded">
+                    Fecha: {article.fecha}
+                  </span>
+                  <span className="bg-gray-50 px-2 py-1 rounded">
+                    Sección: {article.seccion}
+                  </span>
+                  <span className="bg-gray-50 px-2 py-1 rounded">
+                    Autor: {article.autor}
+                  </span>
+                </div>
+              </div>
+              <div className="text-gray-400 group-hover:text-blue-500 absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                <span className="text-sm">Abrir</span>
+                <FontAwesomeIcon icon={faChevronRight} className="text-xl" />
               </div>
             </div>
-            <div className="flex items-center space-x-6">
-              <div className={`flex items-center space-x-2 ${getStatusColor(article.status || 'unknown')}`}>
-                {article.status === 'unreviewed' && <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />}
-                <span className="font-medium">{article.status}</span>
-                {article.metrics?.quality && <span>{article.metrics.quality}%</span>}
-              </div>
-              <div className="flex items-center space-x-2 text-blue-600">
-                <span className="text-sm font-medium">Abrir artículo</span>
-                <FontAwesomeIcon icon={faChevronRight} className="text-gray-400" />
-              </div>
-            </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       ))}
     </div>
   );
-}
+};
+
+export default ArticleList;
