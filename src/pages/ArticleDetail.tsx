@@ -11,6 +11,7 @@ import AdjectivesMetricsSimple from '../components/AdjectivesMetricsSimple';
 
 export interface Article {
   adjectives?: string[];
+  sources?: any;
 }
 
 export default function ArticleDetail() {
@@ -58,12 +59,13 @@ export default function ArticleDetail() {
                 activeFilters={activeFilters}
                 entities={article.entities}
                 adjectives={article.adjectives}
+                sources={article.sources}
               />
             </div>
             <div className="space-y-4 md:space-y-6">
               <EntityMetrics entities={article.entities} />
               <AdjectivesMetrics metrics={article.metrics} adjectives={article.adjectives} />
-              {/* <SourcesMetrics sources={article.sources} /> */}
+              <SourcesMetrics metrics={article.metrics} sources={article.sources} />
             </div>
           </div>
         </div>
