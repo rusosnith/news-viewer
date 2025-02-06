@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import MetricsCard from '../components/MetricsCard';
 import ArticleList from '../components/ArticleList';
 import AdjectivesMetrics from '../components/AdjectivesMetrics';
@@ -19,45 +19,70 @@ const Home: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<SortField>('fecha');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  const [selectedAutor, setSelectedAutor] = useState<string>('');
+  const [selectedSeccion, setSelectedSeccion] = useState<string>('');
 
-  // Ordenar artículos
-  const getSortedArticles = () => {
-    return [...articles].sort((a, b) => {
-      let comparison = 0;
-      
-      switch (sortField) {
-        case 'fecha':
-          // Convertir las fechas a formato DD/MM/YYYY antes de comparar
-          const [diaA, mesA, anioA] = a.fecha.split('/').map(Number);
-          const [diaB, mesB, anioB] = b.fecha.split('/').map(Number);
-          const fechaA = new Date(anioA, mesA - 1, diaA);
-          const fechaB = new Date(anioB, mesB - 1, diaB);
-          comparison = fechaB.getTime() - fechaA.getTime();
-          break;
-        case 'autor':
-          // Normalizar strings para comparación (quitar acentos, mayúsculas)
-          const autorA = a.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-          const autorB = b.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-          comparison = autorA.localeCompare(autorB);
-          break;
-        case 'seccion':
-          comparison = a.seccion.localeCompare(b.seccion);
-          break;
-      }
+  // Obtener listas únicas de autores y secciones
+  const { autores, secciones } = useMemo(() => {
+    const autoresSet = new Set(articles.map(a => a.autor));
+    const seccionesSet = new Set(articles.map(a => a.seccion));
+    return {
+      autores: Array.from(autoresSet).sort(),
+      secciones: Array.from(seccionesSet).sort()
+    };
+  }, [articles]);
 
-      return sortOrder === 'asc' ? comparison : -comparison;
-    });
+  // Filtrar y ordenar artículos
+  const getFilteredAndSortedArticles = () => {
+    return [...articles]
+      .filter(article => {
+        if (selectedAutor && article.autor !== selectedAutor) return false;
+        if (selectedSeccion && article.seccion !== selectedSeccion) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        let comparison = 0;
+        
+        switch (sortField) {
+          case 'fecha':
+            const [diaA, mesA, anioA] = a.fecha.split('/').map(Number);
+            const [diaB, mesB, anioB] = b.fecha.split('/').map(Number);
+            const fechaA = new Date(anioA, mesA - 1, diaA);
+            const fechaB = new Date(anioB, mesB - 1, diaB);
+            comparison = fechaB.getTime() - fechaA.getTime();
+            break;
+          case 'autor':
+            const autorA = a.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const autorB = b.autor.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            comparison = autorA.localeCompare(autorB);
+            break;
+          case 'seccion':
+            comparison = a.seccion.localeCompare(b.seccion);
+            break;
+        }
+
+        return sortOrder === 'asc' ? comparison : -comparison;
+      });
   };
 
-  // Calcular el total de páginas con los artículos ordenados
-  const sortedArticles = getSortedArticles();
-  const totalPages = Math.ceil(sortedArticles.length / ARTICLES_PER_PAGE);
+  const filteredAndSortedArticles = getFilteredAndSortedArticles();
+  const totalPages = Math.ceil(filteredAndSortedArticles.length / ARTICLES_PER_PAGE);
 
   // Obtener los artículos de la página actual
   const getCurrentPageArticles = () => {
     const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
     const endIndex = startIndex + ARTICLES_PER_PAGE;
-    return sortedArticles.slice(startIndex, endIndex);
+    return filteredAndSortedArticles.slice(startIndex, endIndex);
+  };
+
+  // Reset página al cambiar filtros
+  const handleFilterChange = (type: 'autor' | 'seccion', value: string) => {
+    if (type === 'autor') {
+      setSelectedAutor(value);
+    } else {
+      setSelectedSeccion(value);
+    }
+    setCurrentPage(1);
   };
 
   // Manejar cambio de ordenamiento
@@ -101,35 +126,70 @@ const Home: React.FC = () => {
         </div> */}
 
         <div className="mt-8 md:mt-12">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
             <h2 className="text-xl font-semibold">Notas</h2>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Ordenar por:</span>
-              <div className="flex gap-2">
-                {[
-                  { id: 'fecha', label: 'Fecha' },
-                  { id: 'autor', label: 'Autor' },
-                  { id: 'seccion', label: 'Sección' }
-                ].map(({ id, label }) => (
-                  <button
-                    key={id}
-                    onClick={() => handleSort(id as SortField)}
-                    className={`px-3 py-1 text-sm border rounded-md hover:bg-gray-50 flex items-center gap-1
-                      ${sortField === id ? 'bg-blue-50 border-blue-200' : ''}`}
-                  >
-                    {label}
-                    {sortField === id && (
-                      <span className="text-blue-500">
-                        {sortOrder === 'asc' ? '↑' : '↓'}
-                      </span>
-                    )}
-                  </button>
-                ))}
+            
+            <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 md:ml-auto">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Filtrar por:</span>
+                <div className="flex gap-4">
+                  <div className="w-48">
+                    <select
+                      value={selectedAutor}
+                      onChange={(e) => handleFilterChange('autor', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md text-sm"
+                    >
+                      <option value="">Todos los autores</option>
+                      {autores.map(autor => (
+                        <option key={autor} value={autor}>{autor}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="w-48">
+                    <select
+                      value={selectedSeccion}
+                      onChange={(e) => handleFilterChange('seccion', e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md text-sm"
+                    >
+                      <option value="">Todas las secciones</option>
+                      {secciones.map(seccion => (
+                        <option key={seccion} value={seccion}>{seccion}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Ordenar por:</span>
+                <div className="flex gap-2">
+                  {[
+                    { id: 'fecha', label: 'Fecha' },
+                    { id: 'autor', label: 'Autor' },
+                    { id: 'seccion', label: 'Sección' }
+                  ].map(({ id, label }) => (
+                    <button
+                      key={id}
+                      onClick={() => handleSort(id as SortField)}
+                      className={`px-3 py-1 text-sm border rounded-md hover:bg-gray-50 flex items-center gap-1
+                        ${sortField === id ? 'bg-blue-50 border-blue-200' : ''}`}
+                    >
+                      {label}
+                      {sortField === id && (
+                        <span className="text-blue-500">
+                          {sortOrder === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
           
-          <ArticleList articles={getCurrentPageArticles()} />
+          <div className="mt-6">
+            <ArticleList articles={getCurrentPageArticles()} />
+          </div>
           
           {/* Paginación */}
           {totalPages > 1 && (
