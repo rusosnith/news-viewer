@@ -7,6 +7,7 @@ import SentimentAnalysis from '../components/SentimentAnalysis';
 import { mockEntityMetrics } from '../data/mockData';
 import { calculateMetrics } from '../components/articleAnalytics';
 import loadArticles from '../components/articleLoader';
+import HomeMetrics from '../components/HomeMetrics';
 
 const ARTICLES_PER_PAGE = 10;
 
@@ -119,31 +120,14 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">The trust editor</h1>
-          <p className="text-sm md:text-base text-gray-500">Una herramienta con IA para ayudar a las redacciones a mejorar las noticias</p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">The trust editor</h1>
+          <p className="text-lg text-gray-600">
+            Una herramienta con IA para ayudar a las redacciones a mejorar las noticias
+          </p>
         </div>
 
-        <div className="mb-8">
-          <MetricsCard metrics={metrics} />
-        </div>
-
-{/* TODO: volver a poner con datos reales */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          <div>
-            <EntityMetrics metrics={mockEntityMetrics} />
-          </div>
-          <div>
-            <AdjectivesMetrics metrics={{ total: 315, max: 679 }} />
-          </div>
-          <div>
-            <SentimentAnalysis
-              negative={39}
-              neutral={46}
-              positive={15}
-            />
-          </div>
-        </div> */}
+        <HomeMetrics articles={articles} />
 
         <div className="mt-8 md:mt-12">
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
